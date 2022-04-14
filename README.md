@@ -2,7 +2,7 @@
 Wein2D.js bindings for creating browser games in Rust using WebAssembly.
 
 ## Code example
-This is a simple Example for a program:
+This is a simple Example for a program (rust):
 ```rust
 mod wein2d_js;
 
@@ -77,6 +77,30 @@ pub fn on_frame() { // gets called once per frame
         255, 255, 255, 255 // draw the cube white
     );
 }
+```
+
+Include the build in a webpage like this:
+```html
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            * { margin: 0px; overflow: hidden; }
+            canvas { width: 100vw; height: 100vh; }
+        </style>
+        <script src="wein2d.js"></script> <!-- include Wein2D.js -->
+        <script src="wein2d-wasm.js"></script> <!-- include Wein2D.js-WASM -->
+        <script>
+            window.onload = function()
+            {
+                wein2dWASM_init(document.getElementById("canvas"), "/pkg/Wein2D_js_wasm.js")
+            }
+        </script>
+    </head>
+    <body>
+        <canvas id="canvas"></canvas> <!-- normal canvas element -->
+    </body>
+</html>
 ```
 
 # Documentation
