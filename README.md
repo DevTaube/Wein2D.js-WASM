@@ -95,7 +95,10 @@ Include the build in a webpage like this:
         <script>
             window.onload = function()
             {
-                wein2dWASM_init(document.getElementById("canvas"), "/pkg/Wein2D_js_wasm.js")
+                wein2dWASM_init(
+                    document.getElementById("canvas"), // target element with ID "canvas"
+                    "/pkg/Wein2D_js_wasm.js" // wasm-bindgen generated js file when building using "wasm-pack build --target web"
+                );
             }
         </script>
     </head>
