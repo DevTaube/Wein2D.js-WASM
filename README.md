@@ -1,5 +1,5 @@
 # Wein2D.js-WASM
-Wein2D.js bindings for creating browser games in Rust. 
+Wein2D.js bindings for creating browser games in Rust using WebAssembly.
 
 ## Code example
 This is a simple Example for a program:
