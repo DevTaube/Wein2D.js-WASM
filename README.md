@@ -4,9 +4,9 @@ Wein2D.js bindings for creating browser games in Rust using WebAssembly.
 ## Code example
 This is a simple Example for a program:
 ```rust
-mod wein2d;
+mod wein2d_js;
 
-use wein2d::*;
+use wein2d_js::*;
 use wasm_bindgen::prelude::*;
 
 // code for statically storing a GameState-struct
