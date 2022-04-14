@@ -1,6 +1,8 @@
 # Wein2D.js-WASM
 Wein2D.js bindings for creating browser games in Rust using WebAssembly.
 
+Wein2D.js-WASM requires [Wein2d.js](https://github.com/devtaube/wein2d.js) to be loaded in the same document.
+
 ## Code example
 This is a simple Example for a program (rust):
 ```rust
