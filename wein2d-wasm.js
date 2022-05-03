@@ -38,7 +38,7 @@ function wein2dWASM_init(canvasElement, wasmpackLinkerFile)
 
             if(typeof wasm_linker.on_start !== "function")
             {
-                console.error(`Provided wasm-linker-module does not have a function called "on_start".
+                throw `Provided wasm-linker-module does not have a function called "on_start".
 
 Implementation in Rust (requires crate "wasm-bindgen"):
 ==================================================
@@ -52,13 +52,12 @@ pub fn on_start()
     // code to run on initialization here
 }
 
-==================================================`)
-                return
+==================================================`;
             }
 
             if(typeof wasm_linker.on_frame !== "function")
             {
-                console.error(`Provided wasm-linker-module does not have a function called "on_frame".
+                throw `Provided wasm-linker-module does not have a function called "on_frame".
 
 Implementation in Rust (requires crate "wasm-bindgen"):
 ==================================================
@@ -72,8 +71,7 @@ pub fn on_frame()
     // code to run on every frame here
 }
 
-==================================================`)
-                return
+==================================================`;
             }
 
             wein2dWASM_wein2d = new Wein2DApplication(canvasElement, wein2dWASM_onFrame)
@@ -98,168 +96,7 @@ function wein2dWASM_onFrame()
     wein2dWASM_wasm.on_frame()
 }
 
-// Sound
-
-let wein2dWASM_sounds = []
-let wein2dWASM_freeSoundIndexes = []
-
-function wein2dWASM_sound_new(filePath)
-{
-    let newSound = new Sound(filePath)
-
-    if(wein2dWASM_freeSoundIndexes.length > 0)
-    {
-        let newSoundIndex = wein2dWASM_freeSoundIndexes.shift()
-        wein2dWASM_sounds[newSoundIndex] = newSound
-        return newSoundIndex
-    }
-
-    let newSoundIndex = wein2dWASM_sounds.length
-    wein2dWASM_sounds[newSoundIndex] = newSound
-    return newSoundIndex
-}
-
-function wein2dWASM_sound_setVolume(index, volume)
-{
-    wein2dWASM_sounds[index].setVolume(volume)
-}
-
-function wein2dWASM_sound_play(index)
-{
-    wein2dWASM_sounds[index].play()
-}
-
-function wein2dWASM_sound_loop(index, looping)
-{
-    wein2dWASM_sounds[index].loop(looping)
-}
-
-function wein2dWASM_sound_stop(index)
-{
-    wein2dWASM_sounds[index].stop()
-}
-
-function wein2dWASM_sound_isPlaying(index)
-{
-    return wein2dWASM_sounds[index].isPlaying()
-}
-
-function wein2dWASM_sound_drop(index)
-{
-    wein2dWASM_sounds[index] = undefined
-    wein2dWASM_freeSoundIndexes.push(index)
-}
-
-// Sprite
-
-let wein2dWASM_sprites = []
-let wein2dWASM_freeSpriteIndexes = []
-
-function wein2dWASM_sprite_new(filePath)
-{
-    let newSprite = new Sprite(filePath)
-
-    if(wein2dWASM_freeSpriteIndexes.length > 0)
-    {
-        let newSpriteIndex = wein2dWASM_freeSpriteIndexes.shift()
-        wein2dWASM_sprites[newSpriteIndex] = newSprite
-        return newSpriteIndex
-    }
-
-    let newSpriteIndex = wein2dWASM_sprites.length
-    wein2dWASM_sprites[newSpriteIndex] = newSprite
-    return newSpriteIndex
-}
-
-function wein2dWASM_sprite_getWidth(index)
-{
-    return wein2dWASM_sprites[index].getWidth()
-}
-
-function wein2dWASM_sprite_getHeight(index)
-{
-    return wein2dWASM_sprites[index].getHeight()
-}
-
-function wein2dWASM_sprite_drop(index)
-{
-    wein2dWASM_sprites[index] = undefined
-    wein2dWASM_freeSpriteIndexes.push(index)
-}
-
-// VirtualCanvas
-
-let wein2dWASM_virtualCanvases = []
-let wein2dWASM_freeVirtualCanvasIndexes = []
-
-function wein2dWASM_virtualCanvas_new(width, height)
-{
-    let newVirtualCanvas = new VirtualCanvas(width, height)
-
-    if(wein2dWASM_freeVirtualCanvasIndexes.length > 0)
-    {
-        let newVirtualCanvasIndex = wein2dWASM_freeVirtualCanvasIndexes.shift()
-        wein2dWASM_virtualCanvases[newVirtualCanvasIndex] = newVirtualCanvas
-        return newVirtualCanvasIndex
-    }
-
-    let newVirtualCanvasIndex = wein2dWASM_virtualCanvases.length
-    wein2dWASM_virtualCanvases[newVirtualCanvasIndex] = newVirtualCanvas
-    return newVirtualCanvasIndex
-}
-
-function wein2dWASM_virtualCanvas_getWidth(index)
-{
-    return wein2dWASM_virtualCanvases[index].getWidth()
-}
-
-function wein2dWASM_virtualCanvas_getHeight(index)
-{
-    return wein2dWASM_virtualCanvases[index].getHeight()
-}
-
-function wein2dWASM_virtualCanvas_drawRect(destVirtualCanvasIndex, posX, posY, width, height, colorA, colorR, colorG, colorB)
-{
-    wein2dWASM_virtualCanvases[destVirtualCanvasIndex].drawRect(posX, posY, width, height, colorA, colorR, colorG, colorB)
-}
-
-function wein2dWASM_virtualCanvas_drawOval(destVirtualCanvasIndex, posX, posY, width, height, colorA, colorR, colorG, colorB)
-{
-    wein2dWASM_virtualCanvases[destVirtualCanvasIndex].drawOval(posX, posY, width, height, colorA, colorR, colorG, colorB)
-}
-
-function wein2dWASM_virtualCanvas_drawSprite(destVirtualCanvasIndex, spriteIndex, posX, posY, width, height, srcPosX, srcPosY, srcWidth, srcHeight, colorA)
-{
-    wein2dWASM_virtualCanvases[destVirtualCanvasIndex].drawSprite(wein2dWASM_sprites[spriteIndex], posX, posY, width, height, srcPosX, srcPosY, srcWidth, srcHeight, colorA)
-}
-
-function wein2dWASM_virtualCanvas_drawText(destVirtualCanvasIndex, content, posX, posY, positioning, fontSize, fontFamily, colorA, colorR, colorG, colorB)
-{
-    wein2dWASM_virtualCanvases[destVirtualCanvasIndex].drawText(content, posX, posY, positioning, fontSize, fontFamily, colorA, colorR, colorG, colorB)
-}
-
-function wein2dWASM_virtualCanvas_fill(destVirtualCanvasIndex, colorA, colorR, colorG, colorB)
-{
-    wein2dWASM_virtualCanvases[destVirtualCanvasIndex].fill(colorA, colorR, colorG, colorB)
-}
-
-function wein2dWASM_virtualCanvas_drawLine(destVirtualCanvasIndex, posX, posY, endX, endY, lineWidth, colorA, colorR, colorG, colorB)
-{
-    wein2dWASM_virtualCanvases[destVirtualCanvasIndex].drawLine(posX, posY, endX, endY, lineWidth, colorA, colorR, colorG, colorB)
-}
-
-function wein2dWASM_virtualCanvas_drawVirtualCanvas(destVirtualCanvasIndex, virtualCanvasIndex, posX, posY, width, height, srcPosX, srcPosY, srcWidth, srcHeight, colorA)
-{
-    wein2dWASM_virtualCanvases[destVirtualCanvasIndex].drawVirtualCanvas(wein2dWASM_virtualCanvases[virtualCanvasIndex], posX, posY, width, height, srcPosX, srcPosY, srcWidth, srcHeight, colorA)
-}
-
-function wein2dWASM_virtualCanvas_drop(index)
-{
-    wein2dWASM_virtualCanvases[index] = undefined
-    wein2dWASM_freeVirtualCanvasIndexes.push(index)
-}
-
-// Wein2DApplication
+// Wein2DApplication functionality
 
 let wein2dWASM_wein2d
 
@@ -318,37 +155,303 @@ function wein2dWASM_getMouseR()
     return wein2dWASM_wein2d.getMouseR()
 }
 
-function wein2dWASM_drawRect(posX, posY, width, height, colorA, colorR, colorG, colorB)
+function wein2dWASM_drawRectangle()
 {
-    wein2dWASM_wein2d.drawRect(posX, posY, width, height, colorA, colorR, colorG, colorB)
+    return wein2dWASM_rendercalls.add(new RectangleRenderCall(wein2dWASM_wein2d))
 }
 
-function wein2dWASM_drawOval(posX, posY, width, height, colorA, colorR, colorG, colorB)
+function wein2dWASM_drawOval()
 {
-    wein2dWASM_wein2d.drawOval(posX, posY, width, height, colorA, colorR, colorG, colorB)
+    return wein2dWASM_rendercalls.add(new OvalRenderCall(wein2dWASM_wein2d))
 }
 
-function wein2dWASM_drawSprite(spriteIndex, posX, posY, width, height, srcPosX, srcPosY, srcWidth, srcHeight, colorA)
+function wein2dWASM_drawSprite()
 {
-    wein2dWASM_wein2d.drawSprite(wein2dWASM_sprites[spriteIndex], posX, posY, width, height, srcPosX, srcPosY, srcWidth, srcHeight, colorA)
+    return wein2dWASM_rendercalls.add(new SpriteRenderCall(wein2dWASM_wein2d))
 }
 
-function wein2dWASM_drawText(content, posX, posY, positioning, fontSize, fontFamily, colorA, colorR, colorG, colorB)
+function wein2dWASM_drawVirtualCanvas()
 {
-    wein2dWASM_wein2d.drawText(content, posX, posY, positioning, fontSize, fontFamily, colorA, colorR, colorG, colorB)
+    return wein2dWASM_rendercalls.add(new VirtualCanvasRenderCall(wein2dWASM_wein2d))
 }
 
-function wein2dWASM_fill(colorA, colorR, colorG, colorB)
+function wein2dWASM_drawText()
 {
-    wein2dWASM_wein2d.fill(colorA, colorR, colorG, colorB)
+    return wein2dWASM_rendercalls.add(new TextRenderCall(wein2dWASM_wein2d))
 }
 
-function wein2dWASM_drawLine(posX, posY, endX, endY, lineWidth, colorA, colorR, colorG, colorB)
+function wein2dWASM_drawLine()
 {
-    wein2dWASM_wein2d.drawLine(posX, posY, endX, endY, lineWidth, colorA, colorR, colorG, colorB)
+    return wein2dWASM_rendercalls.add(new LineRenderCall(wein2dWASM_wein2d))
 }
 
-function wein2dWASM_drawVirtualCanvas(virtualCanvasIndex, posX, posY, width, height, srcPosX, srcPosY, srcWidth, srcHeight, colorA)
+function wein2dWASM_clearRectangle()
 {
-    wein2dWASM_wein2d.drawVirtualCanvas(wein2dWASM_virtualCanvases[virtualCanvasIndex], posX, posY, width, height, srcPosX, srcPosY, srcWidth, srcHeight, colorA)
+    return wein2dWASM_rendercalls.add(new ClearRectangleRenderCall(wein2dWASM_wein2d))
+}
+
+function wein2dWASM_fill(red, green, blue, alpha)
+{
+    wein2dWASM_wein2d.fill(red, green, blue, alpha)
+}
+
+// Code for collections (used for storing sounds, sprites, virtualcanvases and rendercalls)
+
+class Collection
+{
+
+    items = []
+    freeIndexes = []
+
+    add(item)
+    {
+        if(this.freeIndexes.length > 0)
+        {
+            let itemIndex = this.freeIndexes.shift()
+            this.items[itemIndex] = item
+            return itemIndex
+        }
+
+        let itemIndex = this.items.length
+        this.items[itemIndex] = item
+        return itemIndex
+    }
+
+    get(index)
+    {
+        return this.items[index]
+    }
+
+    drop(index)
+    {
+        this.items[index] = undefined
+        this.freeIndexes.push(index)
+    }
+
+}
+
+// Sound Collection
+
+let wein2dWASM_sounds = new Collection()
+
+function wein2dWASM_sound_create(filePath)
+{
+    return wein2dWASM_sounds.add(new Sound(filePath))
+}
+
+function wein2dWASM_sound_setVolume(index, volume)
+{
+    wein2dWASM_sounds.get(index).setVolume(volume)
+}
+
+function wein2dWASM_sound_play(index)
+{
+    wein2dWASM_sounds.get(index).play()
+}
+
+function wein2dWASM_sound_loop(index, looping)
+{
+    wein2dWASM_sounds.get(index).loop(looping)
+}
+
+function wein2dWASM_sound_stop(index)
+{
+    wein2dWASM_sounds.get(index).stop()
+}
+
+function wein2dWASM_sound_isPlaying(index)
+{
+    return wein2dWASM_sounds.get(index).isPlaying()
+}
+
+function wein2dWASM_sound_drop(index)
+{
+    wein2dWASM_sounds.drop(index)
+}
+
+// sprite collection
+
+let wein2dWASM_sprites = new Collection()
+
+function wein2dWASM_sprite_create(filePath)
+{
+    return wein2dWASM_sprites.add(new Sprite(filePath))
+}
+
+function wein2dWASM_sprite_getWidth(index)
+{
+    return wein2dWASM_sprites.get(index).getWidth()
+}
+
+function wein2dWASM_sprite_getHeight(index)
+{
+    return wein2dWASM_sprites.get(index).getHeight()
+}
+
+function wein2dWASM_sprite_drop(index)
+{
+    wein2dWASM_sprites.drop(index)
+}
+
+// virtualCanvases collection
+
+let wein2dWASM_virtualCanvases = new Collection()
+
+function wein2dWASM_virtualcanvas_create(width, height)
+{
+    return wein2dWASM_virtualCanvases.add(new VirtualCanvas(width, height))
+}
+
+function wein2dWASM_virtualcanvas_drawRectangle(index)
+{
+    return wein2dWASM_rendercalls.add(new RectangleRenderCall(wein2dWASM_virtualCanvases.get(index)))
+}
+
+function wein2dWASM_virtualcanvas_drawOval(index)
+{
+    return wein2dWASM_rendercalls.add(new OvalRenderCall(wein2dWASM_virtualCanvases.get(index)))
+}
+
+function wein2dWASM_virtualcanvas_drawSprite(index)
+{
+    return wein2dWASM_rendercalls.add(new SpriteRenderCall(wein2dWASM_virtualCanvases.get(index)))
+}
+
+function wein2dWASM_virtualcanvas_drawVirtualCanvas(index)
+{
+    return wein2dWASM_rendercalls.add(new VirtualCanvasRenderCall(wein2dWASM_virtualCanvases.get(index)))
+}
+
+function wein2dWASM_virtualcanvas_drawText(index)
+{
+    return wein2dWASM_rendercalls.add(new TextRenderCall(wein2dWASM_virtualCanvases.get(index)))
+}
+
+function wein2dWASM_virtualcanvas_drawLine(index)
+{
+    return wein2dWASM_rendercalls.add(new LineRenderCall(wein2dWASM_virtualCanvases.get(index)))
+}
+
+function wein2dWASM_virtualcanvas_clearRectangle(index)
+{
+    return wein2dWASM_rendercalls.add(new ClearRectangleRenderCall(wein2dWASM_virtualCanvases.get(index)))
+}
+
+function wein2dWASM_virtualCanvas_fill(index, red, green, blue, alpha)
+{
+    wein2dWASM_virtualCanvases.get(index).fill(red, green, blue, alpha)
+}
+
+function wein2dWASM_virtualcanvas_getWidth(index)
+{
+    return wein2dWASM_virtualCanvases.get(index).getWidth()
+}
+
+function wein2dWASM_virtualcanvas_getHeight(index)
+{
+    return wein2dWASM_virtualCanvases.get(index).getHeight()
+}
+
+function wein2dWASM_virtualcanvas_drop(index)
+{
+    wein2dWASM_virtualCanvases.drop(index)
+}
+
+// rendercalls collections
+
+let wein2dWASM_rendercalls = new Collection()
+
+function wein2dWASM_rendercall_setPosition(index, x, y)
+{
+    wein2dWASM_rendercalls.get(index).setPosition(x, y)
+}
+
+function wein2dWASM_rendercall_setSize(index, width, height)
+{
+    wein2dWASM_rendercalls.get(index).setSize(width, height)
+}
+
+function wein2dWASM_rendercall_setColor(index, red, green, blue, alpha)
+{
+    wein2dWASM_rendercalls.get(index).setColor(red, green, blue, alpha)
+}
+
+function wein2dWASM_rendercall_rotateRadians(index, angle)
+{
+    wein2dWASM_rendercalls.get(index).rotateRadians(angle)
+}
+
+function wein2dWASM_rendercall_rotateRadiansPosition(index, angle, x, y)
+{
+    wein2dWASM_rendercalls.get(index).rotateRadians(angle, x, y)
+}
+
+function wein2dWASM_rendercall_draw(index)
+{
+    wein2dWASM_rendercalls.get(index).draw()
+}
+
+function wein2dWASM_rendercall_setSprite(index, spriteIndex)
+{
+    wein2dWASM_rendercalls.get(index).setSprite(wein2dWASM_sprites.get(spriteIndex))
+}
+
+function wein2dWASM_rendercall_setAlpha(index, alpha)
+{
+    wein2dWASM_rendercalls.get(index).setAlpha(alpha)
+}
+
+function wein2dWASM_rendercall_setSpriteCutoutDimensions(index, x, y, width, height)
+{
+    wein2dWASM_rendercalls.get(index).setSpriteCutoutDimensions(x, y, width, height)
+}
+
+function wein2dWASM_rendercall_setVirtualCanvas(index, canvasIndex)
+{
+    wein2dWASM_rendercalls.get(index).setVirtualCanvas(wein2dWASM_virtualCanvases.get(canvasIndex))
+}
+
+function wein2dWASM_rendercall_setCanvasCutoutDimensions(index, x, y, width, height)
+{
+    wein2dWASM_rendercalls.get(index).setCanvasCutoutDimensions(x, y, width, height)
+}
+
+function wein2dWASM_rendercall_setTextContent(index, content)
+{
+    wein2dWASM_rendercalls.get(index).setContent(content)
+}
+
+function wein2dWASM_rendercall_setTextSize(index, size)
+{
+    wein2dWASM_rendercalls.get(index).setSize(size)
+}
+
+function wein2dWASM_rendercall_setPositioning(index, textPositioning)
+{
+    wein2dWASM_rendercalls.get(index).setPositioning(textPositioning)
+}
+
+function wein2dWASM_rendercall_setFontFamily(index, fontFamily)
+{
+    wein2dWASM_rendercalls.get(index).setFontFamily(fontFamily)
+}
+
+function wein2dWASM_rendercall_setStart(index, x, y)
+{
+    wein2dWASM_rendercalls.get(index).setStart(x, y)
+}
+
+function wein2dWASM_rendercall_setEnd(index, x, y)
+{
+    wein2dWASM_rendercalls.get(index).setEnd(x, y)
+}
+
+function wein2dWASM_rendercall_setWidth(index, width)
+{
+    wein2dWASM_rendercalls.get(index).setWidth(width)
+}
+
+function wein2dWASM_rendercall_drop(index)
+{
+    wein2dWASM_rendercalls.drop(index)
 }
