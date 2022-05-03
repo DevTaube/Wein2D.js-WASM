@@ -69,15 +69,15 @@ pub fn on_frame() { // gets called once per frame
     // render calls //////////////////////////////////////////////////
 
     // fill the screen with blue
-    fill(255, 11, 138, 143);
+    fill(11, 138, 143, 255);
 
     // draw the cube
-    draw_rect(
-        (get_width() - CUBE_SIZE) / 2.0, // draw at the center of the screen (x axis)
-        get_height() - CUBE_SIZE - game_state.height, // draw at the cube's height (y axis)
-        CUBE_SIZE, CUBE_SIZE, // draw the cube with it's width and height
-        255, 255, 255, 255 // draw the cube white
-    );
+    draw_rectangle()
+        .set_position((get_width() - CUBE_SIZE) / 2.0, get_height() - CUBE_SIZE - game_state.height)// draw at the center of the screen and cube's height
+        .set_size(CUBE_SIZE, CUBE_SIZE) // draw the cube with it's width and height
+        .set_color(255, 255, 255, 255) // draw in white
+        .rotate_degrees(game_state.height) // rotate it by its height in degrees (why? because it looks cool)
+        .draw(); // draw it
 }
 ```
 
@@ -90,8 +90,8 @@ Include the build in a webpage like this:
             * { margin: 0px; overflow: hidden; }
             canvas { width: 100vw; height: 100vh; }
         </style>
-        <script src="wein2d.js"></script> <!-- include Wein2D.js -->
-        <script src="wein2d-wasm.js"></script> <!-- include Wein2D.js-WASM -->
+        <script src="wein2d.js"></script> <!-- include Wein2D.js (or a minified version) -->
+        <script src="wein2d-wasm.js"></script> <!-- include Wein2D.js-WASM (or a minified version) -->
         <script>
             window.onload = function()
             {
